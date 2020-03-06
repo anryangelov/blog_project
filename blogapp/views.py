@@ -2,38 +2,43 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin as LR
+from django.shortcuts import get_object_or_404, render
 
 from blogapp import models
 
 
-class BlogsListView(ListView):
+def index(request):
+    return render(request, 'index.html')
+
+
+class BlogsListView(LR, ListView):
 
     model = models.Blog
     template_name = 'blogapp/blogs_list.html'
     paginate_by = 5
 
 
-class BlogDetailView(DetailView):
+class BlogDetailView(LR, DetailView):
 
     model = models.Blog
     template_name = 'blogapp/blog_detail.html'
 
 
-class BloggerDetailView(DetailView):
+class BloggerDetailView(LR, DetailView):
 
     model = models.Blogger
     template_name = 'blogapp/blogger_detail.html'
 
 
-class BloggersListView(ListView):
+class BloggersListView(LR, ListView):
 
     model = models.Blogger
     template_name = 'blogapp/bloggers_list.html'
     paginate_by = 5
 
 
-class CommentCreateView(LoginRequiredMixin, CreateView):
+class CommentCreateView(LR, CreateView):
 
     model = models.Comment
     fields = ['comment']
@@ -41,11 +46,13 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['blog'] = models.Blog.objects.get(pk=self.kwargs['blog_id'])
+        data['blog'] = get_object_or_404(
+            models.Blog, pk=self.kwargs['blog_id'])
         return data
 
     def form_valid(self, form):
-        form.instance.blog = models.Blog.objects.get(pk=self.kwargs['blog_id'])
+        form.instance.blog = get_object_or_404(
+            models.Blog, pk=self.kwargs['blog_id'])
         form.instance.user = self.request.user
         return super().form_valid(form)
 

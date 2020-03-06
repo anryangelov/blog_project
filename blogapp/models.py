@@ -22,6 +22,9 @@ class Blog(models.Model):
 
 class Blogger(models.Model):
 
+    class Meta:
+        ordering = ['pk']
+
     name = models.ForeignKey(User, on_delete=models.CASCADE)
     bio = models.TextField()
 

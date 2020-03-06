@@ -51,6 +51,8 @@ class TestViews(TestCase):
                             bio=f'developer {i}')
                          for i in range(3)]
 
+        self.assertTrue(self.client.login(**self.credentials))
+
     def test_BlogsListView(self):
         url = reverse('blogs')
         response = self.client.get(url)
@@ -59,15 +61,6 @@ class TestViews(TestCase):
         self.assertEqual(
             list(response.context['object_list']),
             self.blogs,
-        )
-
-    def test_BloggerDetailView(self):
-        response = self.client.get(self.bloggers[1].get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'blogapp/blogger_detail.html')
-        self.assertEqual(
-            response.context['object'],
-            self.bloggers[1]
         )
 
     def test_BlogDetailView(self):
@@ -79,9 +72,27 @@ class TestViews(TestCase):
             self.blogs[1]
         )
 
+    def test_BloggerDetailView(self):
+        response = self.client.get(self.bloggers[1].get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blogapp/blogger_detail.html')
+        self.assertEqual(
+            response.context['object'],
+            self.bloggers[1]
+        )
+
+    def test_BloggersListView(self):
+        url = reverse('bloggers')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blogapp/bloggers_list.html')
+        self.assertEqual(
+            list(response.context['object_list']),
+            self.bloggers,
+        )
+
     def test_CommentCreateView_get(self):
         url = reverse('comment_create', args=[self.blogs[1].pk])
-        self.assertTrue(self.client.login(**self.credentials))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'blogapp/comment_create.html')
@@ -90,7 +101,6 @@ class TestViews(TestCase):
     def test_CommentCreateView_post(self):
         url = reverse('comment_create', args=[self.blogs[1].pk])
         data = {'comment': 'stupid blog'}
-        self.assertTrue(self.client.login(**self.credentials))
         response = self.client.post(url, data=data)
         self.assertRedirects(response, self.blogs[1].get_absolute_url())
         self.assertQuerysetEqual(
@@ -102,7 +112,6 @@ class TestViews(TestCase):
     def test_CommentCreateView_post_with_bad_args(self):
         url = reverse('comment_create', args=[self.blogs[1].pk])
         data = {'comment': ''}
-        self.assertTrue(self.client.login(**self.credentials))
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertFormError(
@@ -111,3 +120,12 @@ class TestViews(TestCase):
             'comment',
             ['This field is required.']
         )
+
+
+class TestAuth(TestCase):
+
+    def test_template_is_found(self):
+        url = reverse('login')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registration/login.html')

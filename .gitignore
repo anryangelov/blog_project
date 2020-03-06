@@ -1,0 +1,74 @@
+celerybeat-schedule.*
+/static/
+conf/purgatory.conf
+
+celerybeat-schedule
+assets/
+
+#coverage
+htmlcov/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# i18n po files
+*.mo
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+
+# Django stuff:
+*.log
+local_settings.py
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# pyenv
+.python-version
+
+# dotenv
+.env
+
+# virtualenv
+venv/
+ENV/
+
+# media upload
+media/
