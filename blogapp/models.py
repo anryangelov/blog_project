@@ -11,7 +11,7 @@ class Blog(models.Model):
     post_date = models.DateTimeField(auto_now=True)
     title = models.TextField()
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey('Blogger', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.pk} {self.title}'
@@ -25,7 +25,7 @@ class Blogger(models.Model):
     class Meta:
         ordering = ['pk']
 
-    name = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     bio = models.TextField()
 
     def __str__(self):
@@ -39,7 +39,7 @@ class Comment(models.Model):
 
     post_date = models.DateTimeField(auto_now=True)
     comment = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -10,8 +10,9 @@ class TestModels(TestCase):
 
     def test_blog_and_blogger(self):
         user = User.objects.create(username='foo', password='moo')
+        blogger = Blogger.objects.create(name=user, bio='some bio')
         blog = Blog.objects.create(
-            author=user,
+            author=blogger,
             title='some title',
             content='some content'
         )
@@ -21,9 +22,10 @@ class TestModels(TestCase):
 
     def test_blog_content_field_is_None(self):
         user = User.objects.create(username='foo', password='moo')
+        blogger = Blogger.objects.create(name=user, bio='some bio')
         with self.assertRaises(IntegrityError):
             Blog.objects.create(
-                author=user,
+                author=blogger,
                 title='Why Python',
                 content=None
             )
@@ -40,18 +42,16 @@ class TestViews(TestCase):
         self.user.set_password(self.credentials['password'])
         self.user.save()
 
-        self.blogs = [Blog.objects.create(
-                          author=self.user,
-                          title=f'Why Python {i}',
-                          content=f'Because is readable {i}')
-                      for i in range(3)]
-
         self.bloggers = [Blogger.objects.create(
                             name=self.user,
                             bio=f'developer {i}')
                          for i in range(3)]
 
-        self.assertTrue(self.client.login(**self.credentials))
+        self.blogs = [Blog.objects.create(
+                          author=self.bloggers[i],
+                          title=f'Why Python {i}',
+                          content=f'Because is readable {i}')
+                      for i in range(3)]
 
     def test_BlogsListView(self):
         url = reverse('blogs')
@@ -92,6 +92,7 @@ class TestViews(TestCase):
         )
 
     def test_CommentCreateView_get(self):
+        self.assertTrue(self.client.login(**self.credentials))
         url = reverse('comment_create', args=[self.blogs[1].pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -99,6 +100,7 @@ class TestViews(TestCase):
         self.assertEqual(response.context['blog'], self.blogs[1])
 
     def test_CommentCreateView_post(self):
+        self.assertTrue(self.client.login(**self.credentials))
         url = reverse('comment_create', args=[self.blogs[1].pk])
         data = {'comment': 'stupid blog'}
         response = self.client.post(url, data=data)
@@ -110,6 +112,7 @@ class TestViews(TestCase):
         )
 
     def test_CommentCreateView_post_with_bad_args(self):
+        self.assertTrue(self.client.login(**self.credentials))
         url = reverse('comment_create', args=[self.blogs[1].pk])
         data = {'comment': ''}
         response = self.client.post(url, data=data)

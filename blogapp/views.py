@@ -12,26 +12,26 @@ def index(request):
     return render(request, 'index.html')
 
 
-class BlogsListView(LR, ListView):
+class BlogsListView(ListView):
 
     model = models.Blog
     template_name = 'blogapp/blogs_list.html'
     paginate_by = 5
 
 
-class BlogDetailView(LR, DetailView):
+class BlogDetailView(DetailView):
 
     model = models.Blog
     template_name = 'blogapp/blog_detail.html'
 
 
-class BloggerDetailView(LR, DetailView):
+class BloggerDetailView(DetailView):
 
     model = models.Blogger
     template_name = 'blogapp/blogger_detail.html'
 
 
-class BloggersListView(LR, ListView):
+class BloggersListView(ListView):
 
     model = models.Blogger
     template_name = 'blogapp/bloggers_list.html'
