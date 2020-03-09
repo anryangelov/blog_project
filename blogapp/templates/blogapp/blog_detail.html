@@ -1,0 +1,21 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+  <h1>{{ object.title }}</h1>
+  <p><strong>Post date</strong> {{ object.post_date }}</p>
+  <p><strong>Author:</strong> <a href="{% url 'blogger' object.author.pk %}">{{ object.author.name }}</a></p>
+  <p><strong>Description:</strong></p>
+  <p style="white-space:pre-wrap;">{{ object.content }}</p>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Comments</h4>
+    {% for comment in object.comment_set.all %}
+      <p> {{ comment.comment }} ({{ comment.user }} - {{ comment.post_date }})</p>
+    {% endfor %}
+
+    <a href="{% url 'comment_create' object.pk %}">create comment</a>
+
+  </div>
+
+{% endblock %}

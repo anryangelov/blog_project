@@ -1,0 +1,26 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Post Date</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for object in object_list %}
+        <tr>
+          <td>{{object.id}}</td>
+          <td><a href="{{ object.get_absolute_url }}">{{ object.post_date }}</a></td>
+          <td>{{ object.title }}</td>
+          <td>{{ object.author.name }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  <table>
+
+{% endblock %}

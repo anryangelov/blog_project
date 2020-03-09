@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+su
+{% block content %}
+  <p> create comment for {{blog.title }} </p>
+  <form method="POST" action="{% url 'comment_create' blog.pk %}">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ form.comment.label_tag }}
+      {{ form.comment }}
+    </div>
+    <input type="submit" class="btn btn-link", value="Add">
+  </div>
+{% endblock %}
